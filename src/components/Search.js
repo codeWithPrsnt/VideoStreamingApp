@@ -20,7 +20,7 @@ const Search = () => {
 
     return (
         <div className='Search-text'>
-            {!data?<ShimmerUI/>: data.map((item) => <div className='Search-text'>
+            {!data?<ShimmerUI/>: data.map((item) => <div className='Search-text' key={item.id.videoId}>
                 <Link to={"/watch?v="+item.id.videoId}>
                     <div className='search-card'>
                         <img width='100%' height='200px' alt='' src={item.snippet.thumbnails.high.url}></img>

@@ -2,12 +2,10 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const searchSlice = createSlice({
     name:'search',
-    initialState:{
-        searchCache:{}
-    },
+    initialState:{},
     reducers:{
         addSearch:(state,action)=>{
-            state.searchCache.action['key']=action['val'];
+            state=Object.assign(state,action.payload);
         }
 
     }

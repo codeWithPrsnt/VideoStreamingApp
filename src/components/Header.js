@@ -12,7 +12,7 @@ const Header = () => {
   const dispatch = useDispatch();
   const isDarkTheme = useSelector(state=>state.app.darkTheme);
   const isMenuOpen = useSelector(state => state.app.isMenuOpen);
-  const searchCache =useSelector(state=>state.search.searchCache);
+  const searchCache =useSelector(state=>state.search);
 
   useEffect(()=>{
     window.addEventListener('scroll',()=>setSuggestion(false));
@@ -20,12 +20,13 @@ const Header = () => {
   },[])
 
   useEffect(()=>{
+    let timer;
     if(searchCache[searchText]){
       setSearch(searchCache[searchText]);
-      return ;
-    }
-    let timer;
-    if(searchText)timer=setTimeout(()=>fetchData(),400)
+    }else{
+    
+    if(searchText)timer=setTimeout(()=>fetchData(),400);
+  }
     return ()=>{
       clearTimeout(timer);
       
@@ -34,11 +35,11 @@ const Header = () => {
 
   const fetchData = async () => {
     try {
-      console.log(searchText);
       const data = await fetch(SEARCH + searchText, { mode: 'cors', method: "get", headers: { "Content-Type": "application/json" } });
       const res = await data.json();
-      setSearch(res.items);
-      dispatch(addSearch({'key':searchText,'val':res.items}));
+      const r = res.items.map((item)=>item.snippet.title);
+      setSearch(r);
+      dispatch(addSearch({[searchText]:r}));
       
     } catch (error) {
       console.log(error);
@@ -67,8 +68,8 @@ const Header = () => {
       </div>
     </div>
     {suggestion && <div  className='suggestion'>
-      {search && search.splice(0,8).map((item)=><a className='suggestion-items' href={"/search?s="+item.snippet.title} key={item.id.videoId} >
-      🔍{item.snippet.title}
+      {search && search.slice(0,8).map((item,i)=><a className='suggestion-items' href={"/search?s="+item} key={i} >
+      🔍{item}
       </a>)}
     </div>}
   </>
